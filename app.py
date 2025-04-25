@@ -8,27 +8,32 @@ app = Flask(__name__)
 df = pd.read_csv("./data/really_final.csv")
 
 # Filter the data
-available_df = df[
-    (df["time_of_day"] == "afternoon") &
-    (df["status"] == 1) &
-    (df["is_handicap_accessible"] == 1) &
-    (df["has_camera_surveillance"] == 1)
-]
-available_df = available_df.dropna(subset=["latitude", "longitude"])
-available_df = available_df[(available_df["latitude"] != 0) & (available_df["longitude"] != 0)]
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def index():
+    return render_template("form.html")
+
+@app.route("/map", methods=["GET", "POST"])
+def show_map():
     if request.method == "POST":
         # Data received from form, but not used
-        first_name = request.form["first_name"]
-        last_name = request.form["last_name"]
-        email = request.form["email"]
-        date_str = request.form["date"]
-        occupation = request.form["occupation"]
+        time_of_day = request.form["time_of_day"]
+        electric_car = int(request.form["electric_car"])
+        handicap = int(request.form["handicap"])
+        surveillance = int(request.form["surveillance"])
+        price = int(request.form["price"])
 
-        # Convert date
-        date_object = datetime.strptime(date_str, "%Y-%m-%d")
+        available_df = df[
+    (df["time_of_day"] == time_of_day) &
+    (df["status"] == 1) &
+    (df["is_handicap_accessible"] == handicap) &
+    (df["has_camera_surveillance"] == surveillance ) &
+    (df["price_per_hour"] <= price)
+        ]
+        available_df = available_df.dropna(subset=["latitude", "longitude"])
+        available_df = available_df[(available_df["latitude"] != 0) & (available_df["longitude"] != 0)]
+
+        
 
     data_json = available_df.to_dict(orient="records")  # <-- no need to dump to JSON string
     return render_template("index.html", data_json=data_json)

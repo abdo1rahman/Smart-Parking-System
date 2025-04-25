@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find a Parking Spot</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: #f2f5f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      form {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+      }
+
+      legend {
+        font-weight: bold;
+        color: #444;
+        margin-bottom: 0.5rem;
+      }
+
+      .choice-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      label.choice {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: #333;
+      }
+
+      select,
+      input[type="range"] {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background: #fff;
+      }
+
+      input[type="radio"] {
+        accent-color: #0077ff;
+      }
+
+      #rangeValue {
+        font-weight: 600;
+        color: #0077ff;
+        display: block;
+        margin-top: 0.25rem;
+        text-align: right;
+      }
+
+      button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #0077ff;
+        color: white;
+        font-size: 1rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #005ecc;
+      }
+
+      @media (max-width: 480px) {
+        form {
+          padding: 1.5rem;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .choice-group {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/map" method="post">
+      <h1>Select Your Preferences</h1>
+
+      <div>
+        <legend>Time of day:</legend>
+        <select id="time-of-day" name="time_of_day" required>
+          <option value="morning">Morning</option>
+          <option value="afternoon">Afternoon</option>
+          <option value="evening">Evening</option>
+          <option value="night">Night</option>
+        </select>
+      </div>
+
+      <div>
+        <legend>Got an electric car?</legend>
+        <div class="choice-group">
+          <label class="choice"
+            ><input type="radio" name="electric_car" value="1" required />
+            Yes</label
+          >
+          <label class="choice"
+            ><input type="radio" name="electric_car" value="0" required />
+            No</label
+          >
+        </div>
+      </div>
+
+      <div>
+        <legend>Do you require accessibility accommodations?</legend>
+        <div class="choice-group">
+          <label class="choice"
+            ><input type="radio" name="handicap" value="1" required />
+            Yes</label
+          >
+          <label class="choice"
+            ><input type="radio" name="handicap" value="0" required /> No</label
+          >
+        </div>
+      </div>
+
+      <div>
+        <legend>Do you need a place with surveillance?</legend>
+        <div class="choice-group">
+          <label class="choice"
+            ><input type="radio" name="surveillance" value="1" required />
+            Yes</label
+          >
+          <label class="choice"
+            ><input type="radio" name="surveillance" value="0" required />
+            No</label
+          >
+        </div>
+      </div>
+
+      <div>
+        <legend>Max price per hour:</legend>
+        <input
+          type="range"
+          id="barInput"
+          name="price"
+          min="5"
+          max="20"
+          value="10"
+          oninput="updateValue(this.value)"
+        />
+        <span id="rangeValue">EGP10</span>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      function updateValue(val) {
+        document.getElementById("rangeValue").textContent = `EGP${val}`;
+      }
+    </script>
+  </body>
+</html>
