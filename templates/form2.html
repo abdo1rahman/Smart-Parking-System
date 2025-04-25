@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Parking Spot</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <style>
+    /* Base styles */
+    :root {
+      --primary-color: #34a853;
+      --primary-light: #4caf50;
+      --primary-dark: #2e7d32;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --text-tertiary: #6b7280;
+      --bg-light: #ffffff;
+      --bg-lighter: #f3f4f6;
+      --border-color: #e5e7eb;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+
+      --form-width: 400px;
+      --form-padding: 24px;
+      --section-spacing: 20px;
+      --input-height: 44px;
+      --border-radius: 8px;
+      --shadow-sm: 0 2px 4px var(--shadow-color);
+      --shadow-md: 0 4px 6px var(--shadow-color);
+      --transition-fast: 150ms ease;
+      --transition-normal: 250ms ease;
+
+      --gradient-primary: linear-gradient(
+        135deg,
+        var(--primary-color),
+        var(--primary-dark)
+      );
+      --gradient-hover: linear-gradient(
+        135deg,
+        var(--primary-dark),
+        var(--primary-color)
+      );
+    }
+
+    /* Global styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-lighter);
+      font-family: "Inter", sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Form container */
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    /* Form styles */
+    form {
+      width: 100%;
+      max-width: var(--form-width);
+      background-color: var(--bg-light);
+      border-radius: var(--border-radius);
+      padding: var(--form-padding);
+      box-shadow: var(--shadow-md);
+      animation: formFadeIn 400ms ease-out;
+      border: 1px solid var(--border-color);
+    }
+
+    @keyframes formFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Form title */
+    .form-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+      text-align: center;
+      color: var(--text-primary);
+    }
+
+    /* Form sections */
+    .form-section {
+      margin-bottom: var(--section-spacing);
+      animation: sectionSlideIn 300ms ease-out forwards;
+      opacity: 0;
+    }
+
+    .form-section:nth-child(2) {
+      animation-delay: 50ms;
+    }
+    .form-section:nth-child(3) {
+      animation-delay: 100ms;
+    }
+    .form-section:nth-child(4) {
+      animation-delay: 150ms;
+    }
+    .form-section:nth-child(5) {
+      animation-delay: 200ms;
+    }
+    .form-section:nth-child(6) {
+      animation-delay: 250ms;
+    }
+
+    @keyframes sectionSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Section header */
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .section-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      margin-right: 8px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    /* Dropdown styles */
+    .dropdown-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .dropdown-trigger {
+      width: 100%;
+      height: var(--input-height);
+      background-color: var(--bg-light);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 0 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: border-color var(--transition-fast);
+    }
+
+    .dropdown-trigger:hover,
+    .dropdown-trigger:focus {
+      border-color: var(--primary-light);
+      outline: none;
+    }
+
+    .dropdown-icon {
+      transition: transform var(--transition-fast);
+      color: var(--text-tertiary);
+    }
+
+    .dropdown-icon.open {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-options {
+      position: absolute;
+      top: calc(var(--input-height) + 4px);
+      left: 0;
+      width: 100%;
+      background-color: var(--bg-light);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 4px 0;
+      margin: 0;
+      list-style: none;
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: var(--shadow-sm);
+      display: none;
+    }
+
+    .dropdown-options.show {
+      display: block;
+      animation: dropdownFadeIn 150ms ease;
+    }
+
+    @keyframes dropdownFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dropdown-option {
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color var(--transition-fast);
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .dropdown-option:hover {
+      background-color: var(--bg-lighter);
+      color: var(--text-primary);
+    }
+
+    .dropdown-option.selected {
+      background-color: #e8f5e9;
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    /* Radio group styles */
+    .radio-group {
+      display: flex;
+      gap: 16px;
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      padding-left: 24px;
+      transition: color var(--transition-fast);
+    }
+
+    .radio-input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .radio-control {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      height: 16px;
+      width: 16px;
+      background-color: var(--bg-light);
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      transition: all var(--transition-fast);
+    }
+
+    .radio-input:checked ~ .radio-control {
+      border-color: var(--primary-color);
+    }
+
+    .radio-control:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      transition: transform var(--transition-normal);
+    }
+
+    .radio-input:checked ~ .radio-control:after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .radio-input:focus ~ .radio-control {
+      box-shadow: 0 0 0 3px rgba(52, 168, 83, 0.2);
+    }
+
+    .radio-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .radio-input:checked ~ .radio-text {
+      color: var(--text-primary);
+    }
+
+    /* Slider styles */
+    .price-slider-container {
+      padding: 16px 0;
+      position: relative;
+    }
+
+    .price-slider {
+      width: 100%;
+      height: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slider-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--border-color);
+      border-radius: 1.5px;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .slider-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 1.5px;
+    }
+
+    .price-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+    }
+
+    .price-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+    }
+
+    .price-slider::-webkit-slider-thumb:hover,
+    .price-slider::-webkit-slider-thumb:active {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 4px rgba(52, 168, 83, 0.2);
+    }
+
+    .price-slider::-moz-range-thumb:hover,
+    .price-slider::-moz-range-thumb:active {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 4px rgba(52, 168, 83, 0.2);
+    }
+
+    .slider-tooltip {
+      position: absolute;
+      top: -32px;
+      transform: translateX(-50%);
+      background: var(--primary-color);
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-fast);
+    }
+
+    .slider-tooltip.visible {
+      opacity: 1;
+    }
+
+    .slider-tooltip:after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid var(--primary-color);
+    }
+
+    .slider-values {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .current-value {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    /* Button styles */
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    .button {
+      height: var(--input-height);
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 0 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .submit-button {
+      background: var(--primary-color);
+      color: white;
+      flex: 1;
+      margin-right: 12px;
+    }
+
+    .submit-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);
+    }
+
+    .submit-button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .button.loading {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+
+    .loader-icon {
+      margin-right: 8px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .reset-button {
+      background: transparent;
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      height: 36px;
+      transition: all var(--transition-fast);
+    }
+
+    .reset-button svg {
+      margin-right: 6px;
+    }
+
+    .reset-button:hover {
+      color: var(--text-primary);
+      border-color: var(--text-secondary);
+      background: var(--bg-lighter);
+    }
+
+    /* Responsive styles */
+    @media (max-width: 480px) {
+      form {
+        padding: 20px 16px;
+      }
+
+      .form-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+
+      .radio-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .form-actions {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .submit-button {
+        width: 100%;
+        margin-right: 0;
+      }
+
+      .reset-button {
+        width: 100%;
+      }
+    }
+  </style>
+  <body>
+    <div class="form-container">
+      <form method="POST" action="/map">
+        <h1 class="form-title">Find Available Parking</h1>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i data-lucide="clock" size="16"></i>
+            </div>
+            <h2 class="section-title">Time of Day</h2>
+          </div>
+          <div class="dropdown-container">
+            <button
+              type="button"
+              class="dropdown-trigger"
+              onclick="toggleDropdown(this)"
+            >
+              <span class="dropdown-value">Morning</span>
+              <i data-lucide="chevron-down" size="14" class="dropdown-icon"></i>
+            </button>
+            <input type="hidden" name="time_of_day" value="morning" />
+            <ul class="dropdown-options">
+              <li
+                class="dropdown-option selected"
+                onclick="selectOption(this, 'morning')"
+              >
+                Morning
+              </li>
+              <li
+                class="dropdown-option"
+                onclick="selectOption(this, 'afternoon')"
+              >
+                Afternoon
+              </li>
+              <li
+                class="dropdown-option"
+                onclick="selectOption(this, 'evening')"
+              >
+                Evening
+              </li>
+              <li class="dropdown-option" onclick="selectOption(this, 'night')">
+                Night
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i data-lucide="zap" size="16"></i>
+            </div>
+            <h2 class="section-title">Electric Car</h2>
+          </div>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="electric_car"
+                value="1"
+                class="radio-input"
+              />
+              <span class="radio-control"></span>
+              <span class="radio-text">Yes</span>
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="electric_car"
+                value="0"
+                class="radio-input"
+                checked
+              />
+              <span class="radio-control"></span>
+              <span class="radio-text">No</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i data-lucide="wheelchair" size="16"></i>
+            </div>
+            <h2 class="section-title">Accessibility Needed</h2>
+          </div>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="handicap"
+                value="1"
+                class="radio-input"
+              />
+              <span class="radio-control"></span>
+              <span class="radio-text">Yes</span>
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="handicap"
+                value="0"
+                class="radio-input"
+                checked
+              />
+              <span class="radio-control"></span>
+              <span class="radio-text">No</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i data-lucide="shield" size="16"></i>
+            </div>
+            <h2 class="section-title">Security Camera</h2>
+          </div>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="surveillance"
+                value="1"
+                class="radio-input"
+              />
+              <span class="radio-control"></span>
+              <span class="radio-text">Yes</span>
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="surveillance"
+                value="0"
+                class="radio-input"
+                checked
+              />
+              <span class="radio-control"></span>
+              <span class="radio-text">No</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i data-lucide="dollar-sign" size="16"></i>
+            </div>
+            <h2 class="section-title">Maximum Price</h2>
+          </div>
+          <div class="price-slider-container">
+            <input
+              type="range"
+              name="price"
+              min="5"
+              max="20"
+              value="10"
+              class="price-slider"
+              oninput="updateSlider(this)"
+            />
+            <div class="slider-track">
+              <div class="slider-progress"></div>
+            </div>
+            <div class="slider-tooltip">EGP 10</div>
+            <div class="slider-values">
+              <span>EGP 5</span>
+              <span class="current-value">EGP 10</span>
+              <span>EGP 20</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="button submit-button"
+            onclick="handleSubmit(event)"
+          >
+            <span>Find Parking</span>
+          </button>
+          <button
+            type="reset"
+            class="reset-button"
+            onclick="handleReset(event)"
+          >
+            <i data-lucide="refresh-cw" size="14"></i>
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Dropdown functionality
+      function toggleDropdown(trigger) {
+        const container = trigger.parentElement;
+        const options = container.querySelector(".dropdown-options");
+        const isOpen = options.classList.contains("show");
+
+        // Close all other dropdowns
+        document
+          .querySelectorAll(".dropdown-options")
+          .forEach((d) => d.classList.remove("show"));
+
+        if (!isOpen) {
+          options.classList.add("show");
+          trigger.querySelector(".dropdown-icon").classList.add("open");
+        } else {
+          options.classList.remove("show");
+          trigger.querySelector(".dropdown-icon").classList.remove("open");
+        }
+      }
+
+      function selectOption(option, value) {
+        const container = option.closest(".dropdown-container");
+        const trigger = container.querySelector(".dropdown-trigger span");
+        const input = container.querySelector('input[type="hidden"]');
+        const options = container.querySelectorAll(".dropdown-option");
+
+        options.forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+        trigger.textContent = value;
+        input.value = value;
+
+        toggleDropdown(container.querySelector(".dropdown-trigger"));
+      }
+
+      // Close dropdowns when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".dropdown-container")) {
+          document
+            .querySelectorAll(".dropdown-options")
+            .forEach((d) => d.classList.remove("show"));
+          document
+            .querySelectorAll(".dropdown-icon")
+            .forEach((i) => i.classList.remove("open"));
+        }
+      });
+
+      // Slider functionality
+      function updateSlider(slider) {
+        const container = slider.closest(".price-slider-container");
+        const progress = container.querySelector(".slider-progress");
+        const tooltip = container.querySelector(".slider-tooltip");
+        const currentValue = container.querySelector(".current-value");
+        const value = slider.value;
+        const percent =
+          ((value - slider.min) / (slider.max - slider.min)) * 100;
+
+        progress.style.width = `${percent}%`;
+        tooltip.textContent = `EGP ${value}`;
+        currentValue.textContent = `EGP ${value}`;
+
+        const tooltipPosition = `calc(${percent}% + (${8 - percent * 0.15}px))`;
+        tooltip.style.left = tooltipPosition;
+      }
+
+      // Show/hide tooltip on slider interaction
+      const slider = document.querySelector(".price-slider");
+      slider.addEventListener("mousedown", () => {
+        slider
+          .closest(".price-slider-container")
+          .querySelector(".slider-tooltip")
+          .classList.add("visible");
+      });
+      slider.addEventListener("mouseup", () => {
+        slider
+          .closest(".price-slider-container")
+          .querySelector(".slider-tooltip")
+          .classList.remove("visible");
+      });
+      slider.addEventListener("touchstart", () => {
+        slider
+          .closest(".price-slider-container")
+          .querySelector(".slider-tooltip")
+          .classList.add("visible");
+      });
+      slider.addEventListener("touchend", () => {
+        slider
+          .closest(".price-slider-container")
+          .querySelector(".slider-tooltip")
+          .classList.remove("visible");
+      });
+
+      // Form submission
+      function handleSubmit(e) {
+        e.preventDefault();
+        const button = e.target;
+        button.classList.add("loading");
+        button.disabled = true;
+        button.innerHTML =
+          '<i data-lucide="loader-2" class="loader-icon"></i><span>Searching...</span>';
+        lucide.createIcons();
+
+        setTimeout(() => {
+          window.location.href = "/map";
+        }, 1500);
+      }
+
+      // Form reset
+      function handleReset(e) {
+        e.preventDefault();
+        const form = e.target.closest("form");
+
+        // Reset all inputs to default values
+        form.querySelector('[name="time_of_day"]').value = "Morning";
+        form.querySelector(".dropdown-value").textContent = "Morning";
+        form.querySelectorAll('[type="radio"]').forEach((radio) => {
+          radio.checked = radio.value === "No";
+        });
+        const slider = form.querySelector('[type="range"]');
+        slider.value = 10;
+        updateSlider(slider);
+      }
+
+      // Initialize slider on page load
+      updateSlider(document.querySelector(".price-slider"));
+    </script>
+  </body>
+</html>

@@ -16,7 +16,6 @@ def index():
 @app.route("/map", methods=["GET", "POST"])
 def show_map():
     if request.method == "POST":
-        # Data received from form, but not used
         time_of_day = request.form["time_of_day"]
         electric_car = int(request.form["electric_car"])
         handicap = int(request.form["handicap"])
@@ -24,18 +23,21 @@ def show_map():
         price = int(request.form["price"])
 
         available_df = df[
-    (df["time_of_day"] == time_of_day) &
-    (df["status"] == 1) &
-    (df["is_handicap_accessible"] == handicap) &
-    (df["has_camera_surveillance"] == surveillance ) &
-    (df["price_per_hour"] <= price)
+            (df["time_of_day"] == time_of_day) &
+            (df["is_ev_friendly"] == electric_car) &
+            (df["status"] == 1) &
+            (df["is_handicap_accessible"] == handicap) &
+            (df["has_camera_surveillance"] == surveillance) &
+            (df["price_per_hour"] <= price)
         ]
+        print(available_df.head())  # Debugging line to check the filtered DataFrame
         available_df = available_df.dropna(subset=["latitude", "longitude"])
         available_df = available_df[(available_df["latitude"] != 0) & (available_df["longitude"] != 0)]
+    else:
+        # Handle GET request: return an empty dataframe or redirect
+        available_df = pd.DataFrame()  # Empty dataframe as a fallback
 
-        
-
-    data_json = available_df.to_dict(orient="records")  # <-- no need to dump to JSON string
+    data_json = available_df.to_dict(orient="records")
     return render_template("index.html", data_json=data_json)
 
 if __name__ == "__main__":
