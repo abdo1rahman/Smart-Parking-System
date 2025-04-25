@@ -11,7 +11,7 @@ df = pd.read_csv("./data/really_final.csv")
 
 @app.route("/")
 def index():
-    return render_template("form.html")
+    return render_template("form3.html")
 
 @app.route("/map", methods=["GET", "POST"])
 def show_map():
@@ -30,11 +30,9 @@ def show_map():
             (df["has_camera_surveillance"] == surveillance) &
             (df["price_per_hour"] <= price)
         ]
-        print(available_df.head())  # Debugging line to check the filtered DataFrame
         available_df = available_df.dropna(subset=["latitude", "longitude"])
         available_df = available_df[(available_df["latitude"] != 0) & (available_df["longitude"] != 0)]
     else:
-        # Handle GET request: return an empty dataframe or redirect
         available_df = pd.DataFrame()  # Empty dataframe as a fallback
 
     data_json = available_df.to_dict(orient="records")

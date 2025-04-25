@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find a Parking Spot</title>
+    <style>
+      :root {
+        --primary: #2e8b57;
+        --primary-dark: #216c46;
+        --bg: #f6faf6;
+        --card-bg: #ffffff;
+        --text: #2f2f2f;
+        --border: #dcdcdc;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg);
+        margin: 0;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      form {
+        background-color: var(--card-bg);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 520px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+        animation: slideUp 0.6s ease forwards;
+        opacity: 0;
+      }
+
+      @keyframes slideUp {
+        0% {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      h1 {
+        text-align: center;
+        color: var(--text);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      legend {
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .choice-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      label.choice {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: var(--text);
+        cursor: pointer;
+        transition: color 0.3s, transform 0.2s;
+      }
+
+      label.choice:hover {
+        color: var(--primary);
+        transform: scale(1.05);
+      }
+
+      input[type="radio"] {
+        accent-color: var(--primary);
+        cursor: pointer;
+      }
+      :root {
+        --primary: #34a853; /* Beautiful green */
+        --primary-light: #e6f4ea; /* Soft light green */
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 10px;
+        background: linear-gradient(
+          to right,
+          var(--primary) 50%,
+          var(--primary-light) 50%
+        );
+        outline: none;
+        border: none;
+        transition: background 0.3s ease;
+      }
+
+      input[type="range"]::-webkit-slider-runnable-track {
+        height: 8px;
+        border-radius: 10px;
+        background: transparent;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: var(--primary);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-top: -6px; /* Center thumb on track */
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+      }
+
+      input[type="range"]::-moz-range-track {
+        height: 8px;
+        border-radius: 10px;
+        background: transparent;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: var(--primary);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      #rangeValue {
+        font-weight: 600;
+        color: var(--primary);
+        display: block;
+        margin-top: 0.25rem;
+        text-align: right;
+        font-size: 0.95rem;
+      }
+
+      button {
+        width: 100%;
+        padding: 0.9rem;
+        background-color: var(--primary);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      button:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-3px) scale(1.03);
+      }
+
+      button:active {
+        transform: scale(0.97);
+      }
+
+      /* Custom Dropdown Styles */
+      .custom-select-wrapper {
+        position: relative;
+        user-select: none;
+      }
+
+      .custom-select {
+        background-color: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.65rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        position: relative;
+        transition: border 0.3s;
+      }
+
+      .custom-select:hover {
+        border-color: var(--primary);
+      }
+
+      .custom-select .arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%) rotate(0deg);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid var(--text);
+        transition: transform 0.3s ease;
+      }
+
+      .custom-select.open .arrow {
+        transform: translateY(-50%) rotate(180deg);
+      }
+
+      .custom-select .options {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        top: 110%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 1000;
+      }
+
+      .custom-select.open .options {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .custom-select .options li {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .custom-select .options li:hover {
+        background-color: #e7f8ea;
+      }
+
+      /* Edge (uses webkit styles) */
+
+      @media (max-width: 480px) {
+        form {
+          padding: 2rem;
+        }
+
+        h1 {
+          font-size: 1.6rem;
+        }
+
+        .choice-group {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/map" method="post">
+      <h1>Select Your Preferences</h1>
+
+      <!-- Custom Dropdown -->
+      <div>
+        <legend>Time of day:</legend>
+        <div class="custom-select-wrapper">
+          <div class="custom-select" id="dropdown">
+            <span class="selected">Select time of day</span>
+            <div class="arrow"></div>
+            <ul class="options">
+              <li data-value="morning">Morning</li>
+              <li data-value="afternoon">Afternoon</li>
+              <li data-value="evening">Evening</li>
+              <li data-value="night">Night</li>
+            </ul>
+          </div>
+          <input type="hidden" name="time_of_day" id="hidden-select" required />
+        </div>
+      </div>
+
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem">
+          <img
+            src="static/electric-car.png"
+            width="30px"
+            style="position: relative; bottom: 3px"
+            alt=""
+          />
+          <legend>Got an electric car?</legend>
+        </div>
+        <div class="choice-group">
+          <label class="choice"
+            ><input type="radio" name="electric_car" value="1" required />
+            Yes</label
+          >
+          <label class="choice"
+            ><input type="radio" name="electric_car" value="0" required />
+            No</label
+          >
+        </div>
+      </div>
+
+      <div>
+        <legend>Do you require accessibility accommodations?</legend>
+        <div class="choice-group">
+          <label class="choice"
+            ><input type="radio" name="handicap" value="1" required />
+            Yes</label
+          >
+          <label class="choice"
+            ><input type="radio" name="handicap" value="0" required /> No</label
+          >
+        </div>
+      </div>
+
+      <div>
+        <legend>Do you need a place with surveillance?</legend>
+        <div class="choice-group">
+          <label class="choice"
+            ><input type="radio" name="surveillance" value="1" required />
+            Yes</label
+          >
+          <label class="choice"
+            ><input type="radio" name="surveillance" value="0" required />
+            No</label
+          >
+        </div>
+      </div>
+
+      <div>
+        <legend>Max price per hour:</legend>
+        <input
+          type="range"
+          id="barInput"
+          name="price"
+          min="5"
+          max="20"
+          value="10"
+          oninput="updateValue(this.value)"
+        />
+        <span id="rangeValue">EGP10</span>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      function updateValue(val) {
+        const range = document.getElementById("barInput");
+        const min = range.min;
+        const max = range.max;
+        const percent = ((val - min) / (max - min)) * 100;
+
+        range.style.background = `linear-gradient(to right, var(--primary) ${percent}%, var(--primary-light) ${percent}%)`;
+
+        document.getElementById("rangeValue").textContent = `EGP${val}`;
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const range = document.getElementById("barInput");
+        updateValue(range.value);
+
+        const dropdown = document.getElementById("dropdown");
+        const selected = dropdown.querySelector(".selected");
+        const hiddenInput = document.getElementById("hidden-select");
+        const optionsList = dropdown.querySelector(".options");
+
+        dropdown.addEventListener("click", (e) => {
+          // If click is NOT on an option, just toggle open/close
+          if (!e.target.closest("li")) {
+            dropdown.classList.toggle("open");
+          }
+        });
+
+        optionsList.querySelectorAll("li").forEach((option) => {
+          option.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const value = option.getAttribute("data-value");
+            selected.textContent = option.textContent;
+            hiddenInput.value = value;
+            dropdown.classList.remove("open");
+          });
+        });
+
+        // Close dropdown if clicked outside
+        document.addEventListener("click", (e) => {
+          if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove("open");
+          }
+        });
+
+        // Fade in the form on page load
+        document.querySelector("form").style.opacity = 1;
+      });
+    </script>
+  </body>
+</html>
